@@ -19,6 +19,7 @@ https://www.acmicpc.net/problemset/options
 
 https://www.acmicpc.net/problemset?sort=ac_desc&submit=fa%2Cus&tier=6%2C7%2C8%2C9%2C10%2C11%2C12%2C13%2C14%2C15&style=cs&style_if=nand
 
+더 나아가서, 실버 체크하고 특정 알고리즘도 체크하면서 풀면 내가 공부하고 싶은 알고리즘만 공부할 수 있겠죠?
 
 ## 2. 얼마나?
 
