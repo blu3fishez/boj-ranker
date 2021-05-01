@@ -12,6 +12,8 @@
 
 ### 군돌이들 팁
 태블릿으로 코딩하고싶은 군돌이들은 C++/C는 C4droid , Python은 Pydroid 한번 검색해보길.. 필자는 안써봤는데 유료앱 값어치는 할거같다. Pydroid는 좀 비싼듯;
+태블릿 키보드가 제대로 반입될지는 모르겠는데, 어떻게든 쓸 수 있다면 termux도 나쁘지 않은 선택이다.
+termux 안에 vim하고 clang 지원하니 참고하도록 하시고...
 
 https://www.acmicpc.net/problemset/options
 
