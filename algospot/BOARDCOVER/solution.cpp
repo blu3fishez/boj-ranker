@@ -12,7 +12,7 @@ const int dir[4][3][2] = {
 int cover_board(int y, int x, int** board){
 	bool finish = true;
 	for(int i = 0; i<y; ++i)
-	    for(int j = 0; j<x; ++j)
+		for(int j = 0; j<x; ++j)
 	        if(board[i][j] == 0) finish = false;
 	int ret = 0;
     int curx = -1, cury = -1;
