@@ -60,6 +60,7 @@ int main(){
 		string lineInput;
 		cin >> Ay >> Ax;
 		int** board = new int*[Ay];
+        bool allBlocked = true;
 		for(int i = 0; i<Ay; ++i)
 			board[i] = new int[Ax];
 		for(int i = 0; i<Ay; ++i){
@@ -67,11 +68,14 @@ int main(){
 			for(int j = 0; j<Ax; ++j){
 				if(lineInput[j] == '#')
 					board[i][j] = 1;
-				else if(lineInput[j] == '.')
+				else if(lineInput[j] == '.'){
 					board[i][j] = 0;
+                    allBlocked = false;
+                }
 			}
 		}
-		cout<<cover_board(Ay, Ax, board)<<'\n';
+        if(allBlocked) cout<<0<<'\n';
+        else cout<<cover_board(Ay, Ax, board)<<'\n';
 		for(int i = 0; i<Ay; ++i)
 			delete[] board[i];
 		delete[] board;
