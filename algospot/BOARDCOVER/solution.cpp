@@ -56,6 +56,7 @@ int main(){
 	int t; cin>>t;
 	while(t--){
         int Ax, Ay;
+<<<<<<< HEAD
 	    string lineInput;
 	    cin >> Ay >> Ax;
 	    int** board = new int*[Ay];
@@ -77,5 +78,25 @@ int main(){
 	    for(int i = 0; i<Ay; ++i)
 	        delete[] board[i];
 	    delete[] board;
+=======
+		string lineInput;
+		cin >> Ay >> Ax;
+		int** board = new int*[Ay];
+		for(int i = 0; i<Ay; ++i)
+			board[i] = new int[Ax];
+		for(int i = 0; i<Ay; ++i){
+			cin>>lineInput;
+			for(int j = 0; j<Ax; ++j){
+				if(lineInput[j] == '#')
+					board[i][j] = 1;
+				else if(lineInput[j] == '.')
+					board[i][j] = 0;
+			}
+		}
+		cout<<cover_board(Ay, Ax, board)<<'\n';
+		for(int i = 0; i<Ay; ++i)
+			delete[] board[i];
+		delete[] board;
+>>>>>>> 39875a5589adaaf2f7396b13c157a1175a540803
 	}
 }
