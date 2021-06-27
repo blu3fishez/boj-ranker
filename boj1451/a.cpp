@@ -2,103 +2,14 @@
 #include<string>
 using namespace std;
 
-typedef struct _line{
-    int line = -1;
-    bool isVert;
-} line;
-
-int maxTimes(int** map, int vert, int hori, line* line1, line* line2, int lines_left){
-    int ans = -1;
-    // line value should be over 0 and under N-1
-    if(lines_left == 0){
-        int seg1 = 0, seg2 = 0, seg3 = 0;
-        if(line1->isVert == line2->isVert){
-            bool isVert = line1->isVert;
-            int linelower = line1->line < line2->line ? line1->line : line2->line;
-            int linehigher = line1->line > line2->line ? line1->line : line2->line;
-            for(int i = 0; i<vert; ++i){
-                for(int j = 0; j<hori; ++j){
-                    if((isVert && i<linelower) || (!isVert && j<linelower)) seg1 += map[i][j];
-                    else if((isVert && i>=linelower && i<linehigher) || (!isVert && j>=linelower && j<linehigher)) seg2 += map[i][j];
-                    else if((isVert && i>=linehigher) || (!isVert && j>=linehigher)) seg3 += map[i][j];
-                }
-            }
-            ans = seg1*seg2*seg3;
+long long partSum(int** map, int fromVert, int toVert, int fromHori, int toHori){
+    long long sum = 0;
+    for(int i = fromVert; i<toVert; ++i){
+        for(int j = fromHori; j<toHori; ++j){
+            sum += map[i][j];
         }
-        else{
-            int seg4 = 0;
-            int seg_result = -1;
-            int vertline = line1->isVert ? line1->line : line2->line;
-            int horiline = line1->isVert ? line2->line : line2->line;
-            for(int i = 0; i<vert; ++i){
-                for(int j = 0; j<hori; ++j){
-                    if(i < vertline && j < horiline) seg1 += map[i][j];
-                    else if(i < vertline && j >= horiline) seg2 += map[i][j];
-                    else if(i >= vertline && j < horiline) seg3 += map[i][j];
-                    else if(i >= vertline && j >= horiline) seg4 += map[i][j];
-                }
-            }
-            int candidate[4];
-            candidate[0] = (seg1+seg2)*seg3*seg4;
-            candidate[1] = (seg1+seg3)*seg2*seg4;
-            candidate[2] = (seg3+seg4)*seg1*seg2;
-            candidate[3] = (seg2+seg4)*seg1*seg3;
-            for(int i = 0; i<4; ++i){
-                ans = ans < candidate[i] ? candidate[i] : ans;
-            }
-        }
-        return ans;
     }
-    else{
-        // choose lines.
-        // 1. vertical line
-        for(int i = 1; i<vert; ++i){
-            if(lines_left == 2){
-                line1 = new line;
-                line1->line = i;
-                line1->isVert = true;
-                --lines_left;
-                int value = maxTimes(map, vert, hori, line1, line2, lines_left);
-                ans = ans < value ? value : ans;
-                delete line1;
-                ++lines_left;
-            }
-            else if(lines_left == 1 && !(line1->isVert && line1->line == i)){
-                line2 = new line;
-                line2->line = i;
-                line2->isVert = true;
-                --lines_left;
-                int value = maxTimes(map, vert, hori, line1, line2, lines_left);
-                ans = ans < value ? value : ans;
-                delete line2;
-                ++lines_left;
-            }
-        }
-        // 2. horizontal line
-        for(int j = 1; j<hori; ++j){
-            if(lines_left == 2){
-                line1 = new line;
-                line1->line = j;
-                line1->isVert = false;
-                --lines_left;
-                int value = maxTimes(map, vert, hori, line1, line2, lines_left);
-                ans = ans < value ? value : ans;
-                delete line1;
-                ++lines_left;
-            }
-            else if(lines_left == 1 && !(!line1->isVert && line1->line == j)){
-                line2 = new line;
-                line2->line = j;
-                line2->isVert = false;
-                --lines_left;
-                int value = maxTimes(map, vert, hori, line1, line2, lines_left);
-                ans = ans < value ? value : ans;
-                delete line2;
-                ++lines_left;
-            }
-        }
-        return ans;
-    }
+    return sum;
 }
 
 int main(){
@@ -111,6 +22,43 @@ int main(){
         for(int j = 0; j<hori; ++j)
             map[i][j] = input[j] - 48;
     }
-    cout<<maxTimes(map, vert, hori, nullptr, nullptr, 2);
+    long long ans = -1;
+    long long value;
+    for(int i = 1; i<vert; ++i){
+        for(int j = i+1; j<vert; ++j){
+            long long sum1 = partSum(map, 0, i, 0, hori);
+            long long sum2 = partSum(map, i, j, 0, hori);
+            long long sum3 = partSum(map, j, vert, 0, hori);
+            value = sum1*sum2*sum3;
+            ans = ans < value ? value : ans;
+        }
+    }
+    for(int i = 1; i<hori; ++i){
+        for(int j = i + 1; j<hori; ++j){
+            long long sum1 = partSum(map, 0, vert, 0, i);
+            long long sum2 = partSum(map, 0, vert, i, j);
+            long long sum3 = partSum(map, 0, vert, j, hori);
+            value = sum1*sum2*sum3;
+            ans = ans < value ? value : ans;
+        }
+    }
+    for(int i = 1; i<vert; ++i){
+        for(int j = 1; j<hori; ++j){
+            long long sum1 = partSum(map, 0, i, 0, j);
+            long long sum2 = partSum(map, i, vert, 0, j);
+            long long sum3 = partSum(map, 0, i, j, hori);
+            long long sum4 = partSum(map, i, vert, j, hori);
+
+            long long candidate[4];
+            candidate[0] = (sum1+sum2)*sum3*sum4;
+            candidate[1] = (sum1+sum3)*sum2*sum4;
+            candidate[2] = (sum3+sum4)*sum1*sum2;
+            candidate[3] = (sum2+sum4)*sum1*sum3;
+            for(int t = 0; t<4; ++t){
+                ans = ans < candidate[t] ? candidate[t] : ans;
+            }
+        }
+    }
+    cout<<ans;
     return 0;
 }
