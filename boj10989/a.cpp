@@ -14,7 +14,7 @@ int main(){
         ++counts[tmp];
     }
     int i = 1;
-    while(i < 10000){
+    while(i <= 10000){
         if(counts[i] != 0){
             for(int j = 0; j<counts[i]; ++j) cout<<i<<'\n';
             counts[i] = 0;
