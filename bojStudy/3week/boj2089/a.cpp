@@ -1,23 +1,16 @@
 #include<iostream>
 using namespace std;
 
-void test(){
-    cout<<-13%-2<<endl;
-    cout<<-13/-2<<endl;
-    cout<<-13%2<<endl;
-    cout<<-13/2<<endl;
-    cout<<"--------"<<endl;
-    cout<<13%-2<<endl;
-    cout<<13/-2<<endl;
-    cout<<13%2<<endl;
-    cout<<13/2<<endl;
+string solve(int N){
+    if(N == 0) return "0";
+    string node = "1";
+    if(N == 1) return node;
+    if(N%-2 == 0) return solve(N/-2) + "0";
+    if(N%-2 == -1) return solve(N/-2 + 1) + node;
+    else return solve(N/-2) + node;
 }
 
-// int solve(int N){ // 음수로 나눌 수 있음을 인지
-//     int tmp = N / -2;
-//     return ;
-// }
-
 int main(){
-    test();
+    int N; cin>>N;
+    cout<<solve(N);
 }
