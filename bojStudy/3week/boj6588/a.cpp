@@ -7,15 +7,17 @@ bool isnotPrime[1000001] = {true, true, };
 void init(){
     int base = 2;
     for (int i = 2; i <= sqrt(1000000); i++) {
-    for (int j = i + i; j <= 1000000; j += i) {
-      if (isnotPrime[j] == false) isnotPrime[j] = true;
+        for (int j = i + i; j <= 1000000; j += i) {
+            if (isnotPrime[j] == false) isnotPrime[j] = true;
+        }   
     }
-  }
 }
 
 int main(){
+    ios_base::sync_with_stdio(0);
+    cin.tie(0); cout.tie(0);
     init();
-    int N;
+    int N = 1;
     while(N){
         cin>>N;
         if(N == 0) return 0;
