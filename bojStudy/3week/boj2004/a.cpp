@@ -1,30 +1,19 @@
-
 #include<iostream>
 using namespace std;
-// N! / (N-M)!*(M)! = (N)*(N-1)*...*(N-M+1)! / M!
-void count(int N, int* counts){
-    int c = 2;
-    while(N > 1){
-        if(!(N%c)){
-            if(c == 2) counts[0]++;
-            if(c == 5) counts[1]++;
-            N /= c;
-        }
-        else c++;
-    }
+
+pair<long long, long long> count(int N){
+    long long count_2 = 0, count_5 = 0;
+    for(long long i = 2; i<=N; i *= 2) count_2 += N/i;
+    for(long long i = 5; i<=N; i *= 5) count_5 += N/i;
+    return pair<long long, long long>(count_2, count_5);
 }
 
 int main(){
     int N, M; cin>>N>>M;
-    int MCount[] = {0, 0};
-    int MinusCount[] = {0, 0};
-    for(int i = N; i > N - M; --i){
-        count(i, MinusCount);
-    }
-    for(int i = M; i>0; --i){
-        count(i, MCount);
-    }
-    MinusCount[0] -= MCount[0];
-    MinusCount[1] -= MCount[1];
-    cout<<(MinusCount[0] < MinusCount[1] ? MinusCount[0] : MinusCount[1]);
+    pair<long long, long long> m = count(M);
+    pair<long long, long long> n = count(N);
+    pair<long long, long long> minus = count(N - M);
+    n.first -= (m.first + minus.first);
+    n.second -= (m.second + minus.second);
+    cout<<(n.first < n.second ? n.first : n.second);
 }
