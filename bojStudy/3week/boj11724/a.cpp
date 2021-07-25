@@ -2,18 +2,25 @@
 #include<vector>
 using namespace std;
 
+bool visit[1001];
 vector<int> graph[1001];
 
+void dfs(int node){
+    visit[node] = true;
+    for(int child : graph[node]){
+        if(!visit[child]) dfs(child);
+    }
+}
+
 int component(int N){
-    bool finished = false;
     int counts = 0;
-    while(!finished++){
-        counts++;
-        
-        for(int i = 1; i<=N; ++i){
-            if(!visit[i]) finished = false;
+    for(int i = 1; i<=N; ++i){
+        if(!visit[i]){
+            dfs(i);
+            counts++;
         }
     }
+    return counts;
 }
 
 int main(){
@@ -23,6 +30,5 @@ int main(){
         graph[a1].push_back(a2);
         graph[a2].push_back(a1);
     }
-    bool finished = false;
-    cout<<++finished;
+    cout<<component(N);
 }
