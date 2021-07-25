@@ -1,33 +1,29 @@
 #include<iostream>
 #include<vector>
 #include<queue>
+#include<cstring>
 #include<algorithm>
 using namespace std;
 
 bool visit[1001] = { false, };
 
-void printDFS(vector<int>* graph, int where, int N){
-    if(!visit[where]){
-        visit[where] = true;
-        cout<<where<<" ";
-    }
-    for(int child : graph[where]){
-        if(!visit[child]) printDFS(graph, child, N);
-    }
+void printDFS(vector<int>* graph, int where){
+    visit[where] = true;
+    cout<<where<<' ';
+    for(int child : graph[where]) if(!visit[child]) printDFS(graph, child);
 }
 
-void printBFS(vector<int>* graph, int where, int N){
-    bool* visit = new bool[N + 1];
+void printBFS(vector<int>* graph, int where){
+    memset(visit, false, sizeof(visit));
     queue<int> q; q.push(where);
     visit[where] = true;
     while(!q.empty()){
         cout<<q.front()<<" ";
-        for(int child : graph[q.front()]){
+        for(int child : graph[q.front()])
             if(!visit[child]){
                 visit[child] = true;
                 q.push(child);
             }
-        }
         q.pop();
     }
 }
@@ -43,7 +39,7 @@ int main(){
     for(int i = 1; i<=N; ++i){
         sort(graph[i].begin(), graph[i].end());
     }
-    printDFS(graph, V, N);
+    printDFS(graph, V);
     cout<<'\n';
-    printBFS(graph, V, N);
+    printBFS(graph, V);
 }
