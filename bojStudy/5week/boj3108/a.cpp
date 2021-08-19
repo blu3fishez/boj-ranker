@@ -6,8 +6,8 @@ typedef struct square {
     int x1, x2, y1, y2;
 } square;
 
-int tree[1001];
-int ranks[1001];
+int tree[1002];
+int ranks[1002];
 set<int> ans;
 
 bool isJoint(square a, square b){
@@ -64,7 +64,8 @@ int main(){
 
     // }
     for(int i=0; i<sq.size(); ++i){
-        if(ans.find(find(tree[i])) == ans.end()) ans.insert(find(tree[i]));
+        int head = find(tree[i]);
+        ans.insert(head);
     }
     // if(ans.empty()) cout<<"empty!\n";
     cout<<ans.size() - 1;
