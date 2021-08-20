@@ -6,8 +6,8 @@ typedef struct square {
     int x1, x2, y1, y2;
 } square;
 
-int tree[1002];
-int ranks[1002];
+int tree[1010];
+int ranks[1010];
 set<int> ans;
 
 bool isJoint(square a, square b){
