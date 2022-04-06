@@ -292,16 +292,67 @@ int dijkstra(int from, int to){
 
 ### 벨만-포드 알고리즘
 
+## 3. 두 포인터
+
+보통 일반적으로 배열을 순회할 때는 for 문을 돌려서 변수 1개로 순회를 한다.  
+하지만 이렇게 되면, 배열에서의 **특정 조건을 만족하는 가장 짧은 길이, 부분배열의 합** 등과 같은 문제를 풀 때,  
+포인터가 하나밖에 없으므로 두개의 for문을 중첩하여 사용한다.  
+
+이렇게 될 경우, O(N^2)의 시간복잡도를 가지게 되어버리는데, 이렇게 될 경우 상당히 시간적으로 비효율적이다.  
+
+따라서 두 포인터를 활용한 순회를 알아보자.  
+
+이번에는 for문이 아닌, while 문으로 순회를 돈다.  
+변수를 start, end 두개를 선언하고, start는 부분합의 시작지점, end는 부분합의 끝지점이다.  
+
+조건을 과만족(더 빼도 되는 경우) start를 앞으로 가게하고,  
+조건을 불만족할 경우 end를 앞으로 가게 하면서,
+
+start <= end 인 경우를 찾아서 구하면된다.  
+이때의 시간 복잡도는 최대 end를 1에서 N까지 간 후 start를 1에서 N까지 가게하는   
+경우이므로 O(2N)이므로 **O(N)** 이다.  
+
+이를 더 활용한게 이분탐색에서 사용하는 start/end 순회인 것 같다.  
+
+```cpp
+// 부분합에서 부분수열의 전체합이 S보다 작은 최소 길이를 가진 수열의 길이를 반환하는 프로그램
+#include<iostream>
+using namespace std;
+
+int presum[100001];
+
+int main(){
+    int N, S; cin>>N>>S;
+    int len = 0;
+    for(int i=1; i<=N; ++i) {
+        cin>>presum[i];
+        presum[i] += presum[i-1];
+    }
+    int start = 0, end = 1; // 조사 범위를 start +1 부터 end 0까지를 범위로 잡았다.
+    while(start < end) {
+        if(presum[end] - presum[start] >= S){
+            if(len == 0 || end - start < len) len = end - start;
+            start++;
+        }
+        else {
+            if(end == N) break;
+            end++;
+        }
+    }
+    cout<<len;
+}
+```
+
 ---
-## 3. 이분 탐색
+## 이분 탐색
 
 ### 삼분 탐색
 ---
-## 4. 분할 정복
+## 분할 정복
 
-## 5. 그리디 알고리즘
+## 그리디 알고리즘
 
-## 6. 완전탐색
+## 완전탐색
 
 
 
