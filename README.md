@@ -343,6 +343,163 @@ int main(){
 }
 ```
 
+## 4. 최소 신장 트리 (Minimum Spanning Tree)
+
+최소 신장 트리란, 비용이 있는 그래프에서 비용을 최소로 하는 간선만 남기고, 모든 정점을 지나는 트리를 의미한다.  
+알고리즘면에서 봤을 때는 가장 적은 비용으로 모든 노드를 연결하는 방법을 찾고자 할 때 쓰일 수 있을 것이다.  
+최소 신장 트리 알고리즘은 대표적으로 2가지가 있는데 모두 실제 코딩테스트에서 자주 쓰이는 개념이므로,  
+바로바로 쓰일 수 있도록 하자.  
+
+### 4-1. Kruskal Algorithm
+
+간선의 개수가 적은 경우 크루스칼 알고리즘을 활용한다.  
+
+간선의 비용만 최소로하면 되므로, 간선을 우선 정렬하여 비용이 적은 간선부터 선택해나가는 알고리즘이다.
+생각해보면 가장 단순한 방법이지만, 트리는 사이클이 생기지 않아야 하므로 사이클이 생기지 않게 해야한다.  
+
+사이클을 없애는 방법은 **Union-Find** 알고리즘을 활용하면 된다.  
+하나의 알고리즘 안에 두개의 이론이 있어서 헷갈릴 수 있지만, Union-find는 익혀두면 좋다.
+
+### Union - Find 알고리즘 (분리 집합)
+
+Union - find 알고리즘은 그래프 등에서 분리집합을 찾아내는 알고리즘이다.  
+모든 정점들에 대한 부모값을 나타내는 parent[] 배열을 만들고, 해당 정점의 부모노드가 누구를 바라보는지  
+반영하면된다.  
+
+> 예를 들어 그래프가 `V({1, 2, 3, 4}), E({{1, 2}, {1, 3}, {2, 3}})`으로 이루어져 있을 때,  
+>
+> 초기 부모노드는 자신을 가르키는 배열을 가진다.
+> ```js
+> parent[] = { 1:1 , 2:2 , 3:3, 4:4};
+> ```
+> 1부터 4까지를 순회하는 반복문 내에서, 1과 인접한 노드들 중에 부모값이 자신보다 작은 숫자가 있는지를 확인한다.
+>
+> - 1과 인접한 노드는 2, 3 둘다 1보다 작으므로 무시
+>
+> 이후 2와 인접한 노드들 중에 부모값이 자신보다 작은 숫자가 있는지를 확인한다.
+>
+> - 2와 인접한 노드는 1, 3 중, parent값이 자신보다 작은 1이 있으므로 parent[2] = 1로 바꿔준다.
+>
+> - 3도 마찬가지 과정을 통해 parent[3] = 1이고,
+>
+> - 4는 인접한 노드가 없으므로 parent[4] = 4이다.
+>```js
+>console.log(parent) // {1:1, 2:1, 3:1, 4:4}
+>```
+> 
+
+이렇게 보았을 때, parent 값이 같은 정점들은 모두 연결되어 있음을 의미한다.  
+구현은 배열링크로 구현한다. 조금 복잡할 수 있으므로 다음부터 구현시 유의하도록 하자.  
+
+```cpp
+int getParent(int a) {
+    if(parent[a] = a) return a;
+    return parent[a] = getParent(parent[a]);
+}
+
+void unionParent(int a, int b, int V){
+    // union a, b and update
+    a = getParent(a);
+    b = getParent(b);
+    if(a < b) parent[b] = a;
+    else parent[a] = b;
+}
+
+// 모두 연결되었는지 확인
+bool allSet(int V){
+    bool finish = true;
+    for(int i=2; i<=V; ++i) {
+        if(parent[1] == getParent(parent[i])) finish = false;
+    }
+    return finish;
+}
+```
+
+---
+
+이를 기반으로 최소 신장 트리를 구하는 알고리즘을 나열하면,
+
+1. 간선들을 비용이 적은 순으로 정렬한다.
+2. 간선을 우선순위 큐에서 pop 한다.
+3. 간선이 나타내는 두 정점이 현재 스패닝 트리에서 같은 부모를 가르키는지 확인한다.
+4. 그렇지않다면 두 정점의 parent 배열값을 더 작은 값으로 통일(union) 해주고, 간선을 MST에 포함시킨다.
+4-1. 이때, 스패닝트리에 있는 다른 노드들에 대한 union도 모두 진행해주어야 합집합이 새로 정의됨을 주의한다.
+5. 모든 parent 배열값이 같아질때까지 반복한다.
+
+이를 코드로 옮기면 아래와 같아진다...
+
+```cpp
+#include<iostream>
+#include<vector>
+#include<queue>
+#include<utility>
+using namespace std;
+
+typedef pair<int, int> pii;
+
+priority_queue<pair<int, pii>> pq; // 간선 우선순위
+int parent[10001];
+
+vector<pii> graph[10001];
+
+
+int getParent(int a) {
+    if(parent[a] = a) return a;
+    return parent[a] = getParent(parent[a]);
+}
+
+void unionParent(int a, int b, int V){
+    // union a, b and update
+    a = getParent(a);
+    b = getParent(b);
+    if(a < b) parent[b] = a;
+    else parent[a] = b;
+}
+
+bool allSet(int V){
+    bool finish = true;
+    for(int i=2; i<=V; ++i) {
+        if(1 == getParent(parent[i])) finish = false;
+    }
+    return finish;
+}
+
+int kruskal(int V){
+    int cost = 0;
+    while(!pq.empty()) {
+        int _cost = -pq.top().first;
+        pii edge = pq.top().second;
+
+        pq.pop();
+        if(parent[edge.first] == parent[edge.second]) continue;
+
+        unionParent(edge.first, edge.second, V);
+        cost += _cost;
+        if(allSet(V)) break;
+    }
+    return cost;
+}
+
+//main 에서의 자료구조 입력 형태
+
+int main(){
+    int V,E; cin>>V>>E;
+    for(int i=1; i<=V; ++i) parent[i] = i;
+    for(int i=0; i<E; ++i){
+        int tmp1, tmp2, cost; cin>>tmp1>>tmp2>>cost;
+        graph[tmp1].push_back(make_pair(tmp2, cost));
+        graph[tmp2].push_back(make_pair(tmp1, cost));
+        pq.push(make_pair(-cost, make_pair(tmp1, tmp2)));
+    }
+    cout<<kruskal(V);
+}
+```
+
+
+### 4-2. Prim Algorithm
+
+간선의 개수가 많을 경우 크루스칼 알고리즘보다 프림 알고리즘이 유리한 경우가 많다.  
+
 ---
 ## 이분 탐색
 
